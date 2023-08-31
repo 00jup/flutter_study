@@ -48,7 +48,7 @@ class _MyAppState extends State<MyApp> {
                           width: 40,
                         ),
                         Text(
-                          "홍길동",
+                          "박정욱",
                           style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
                         ),
 
