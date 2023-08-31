@@ -57,8 +57,8 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DialogUI extends StatefulWidget {
-  DialogUI({super.key, this.state});
-  var state;
+  const DialogUI({super.key, this.state});
+  final state;
   @override
   State<DialogUI> createState() => _DialogUIState();
 }
