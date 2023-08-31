@@ -32,33 +32,7 @@ class _MyAppState extends State<MyApp> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return Dialog(
-                      child: SizedBox(
-                          width: 300,
-                          height: 300,
-                          child: Column(
-                            children: [
-                              Text(
-                                "Contact",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w400),
-                              ),
-                              TextField(),
-                              Container(
-                                child: Row(
-                                  children: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: Text("Cancel")),
-                                    TextButton(
-                                        onPressed: () {}, child: Text("OK")),
-                                  ],
-                                ),
-                              )
-                            ],
-                          )));
+                  return DialogUI(state : a);
                 });
           },
         ),
@@ -82,44 +56,47 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class Contact extends StatefulWidget {
-  const Contact({super.key});
-
+class DialogUI extends StatefulWidget {
+  DialogUI({super.key, this.state});
+  var state;
   @override
-  State<Contact> createState() => _ContactState();
+  State<DialogUI> createState() => _DialogUIState();
 }
 
-var like = 0;
-
-class _ContactState extends State<Contact> {
+class _DialogUIState extends State<DialogUI> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(20.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(like.toString()),
-            SizedBox(
-              width: 40,
-            ),
-            Text(
-              "홍길동",
-              style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
-            ),
-            TextButton(
-                onPressed: () {
-                  setState(() {
-                    like++;
-                  });
-                },
-                child: Container(
-                  child: Text("좋아요"),
-                ))
-          ],
-        ));
+    return Dialog(
+        child: SizedBox(
+            width: 300,
+            height: 300,
+            child: Column(
+              children: [
+                Text(
+                  "Contact",
+                  style: TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.w400),
+                ),
+                TextField(),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text("Cancel")),
+                      TextButton(
+                          onPressed: () {}, child: Text("OK")),
+                    ],
+                  ),
+                )
+              ],
+            )));
   }
 }
+
 
 class bottomLayout extends StatelessWidget {
   const bottomLayout({super.key});
