@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+      MaterialApp(
+          home: MyApp()));
 }
 
 class MyApp extends StatefulWidget {
   MyApp({Key? key}) : super(key: key);
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -22,51 +25,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        home: Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Text(a.toString()),
-        onPressed: () {
-          setState(() {
-            a++;
-          });
-        },
-      ),
-      appBar: AppBar(),
-      body: Container(
-          child: ListView.builder(
+    return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          child: Text(a.toString()),
+          onPressed: () {
+            print(context.findAncestorWidgetOfExactType<MaterialApp>());
+            print('1');
+            showDialog(context: context, builder: (context) {
+              return Dialog(child: Text("hello"));
+            });
+          },
+        ),
+        appBar: AppBar(),
+        body: Container(
+            child: ListView.builder(
               itemCount: 3,
               itemBuilder: (context, i) {
                 //print(i); //debuggin 가능함.
-                return Container(
-                    padding: EdgeInsets.all(20.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(like[i].toString()),
-                        SizedBox(
-                          width: 40,
-                        ),
-                        Text(
-                          "박정욱",
-                          style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
-                        ),
+                return ListTile(
+                  leading: Icon(Icons.contact_page),
 
-                        TextButton(onPressed: (){
-                          setState(() {
-                            like[i]++;
-                          });
-                        }, child: Container(
-                          child: Text("좋아요"),
-                        ))
-                      ],
-                    )); //i for문에서 개수 증가하는 것처럼 i가 증가한다. 목록 많이 필요할 때 ListView.builder
-              })),
-      bottomNavigationBar: BottomAppBar(
-        padding: EdgeInsets.all(10.0),
-        child: bottomLayout(),
-      ),
-    ));
+                  title: Text(
+                    "박정욱",
+                    style: TextStyle(
+                        fontSize: 40.0, fontWeight: FontWeight.w300),
+                  ),
+
+                );
+              },
+            )
+          //i for문에서 개수 증가하는 것처럼 i가 증가한다. 목록 많이 필요할 때 ListView.builder
+        ));
   }
 }
 
@@ -76,6 +65,7 @@ class Contact extends StatefulWidget {
   @override
   State<Contact> createState() => _ContactState();
 }
+
 var like = 0;
 
 class _ContactState extends State<Contact> {
@@ -94,19 +84,19 @@ class _ContactState extends State<Contact> {
               "홍길동",
               style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
             ),
-
-            TextButton(onPressed: (){
-              setState(() {
-                like++;
-              });
-            }, child: Container(
-              child: Text("좋아요"),
-            ))
+            TextButton(
+                onPressed: () {
+                  setState(() {
+                    like++;
+                  });
+                },
+                child: Container(
+                  child: Text("좋아요"),
+                ))
           ],
         ));
   }
 }
-
 
 class bottomLayout extends StatelessWidget {
   const bottomLayout({super.key});
