@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return DialogUI(state : a, state2: b);
+                  return DialogUI(state : a);
                 });
           },
         ),
