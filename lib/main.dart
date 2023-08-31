@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
     return Icon(iconData, size: 50);
   }
 
-  var a = 1;
+  var a = 13;
   List<int> like = [0, 0, 0];
 
   @override
@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return DialogUI(state : a);
+                  return DialogUI(state : a, state2: b);
                 });
           },
         ),
@@ -56,14 +56,9 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class DialogUI extends StatefulWidget {
+class DialogUI extends StatelessWidget {
   const DialogUI({super.key, this.state});
   final state;
-  @override
-  State<DialogUI> createState() => _DialogUIState();
-}
-
-class _DialogUIState extends State<DialogUI> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -88,7 +83,7 @@ class _DialogUIState extends State<DialogUI> {
                           },
                           child: Text("Cancel")),
                       TextButton(
-                          onPressed: () {}, child: Text("OK")),
+                          onPressed: () {}, child: Text(state.toString())),
                     ],
                   ),
                 )
@@ -96,7 +91,6 @@ class _DialogUIState extends State<DialogUI> {
             )));
   }
 }
-
 
 class bottomLayout extends StatelessWidget {
   const bottomLayout({super.key});
