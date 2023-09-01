@@ -18,25 +18,32 @@ class _MyAppState extends State<MyApp> {
     return Icon(iconData, size: 50);
   }
 
-  var a = 13;
+  var total = 3;
+  var name = ['박정욱', '홍길동', '피자집'];
   List<int> like = [0, 0, 0];
+
+  addNumbers() {
+    setState(() {
+      total++;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Text(a.toString()),
+          child: Text(name[0].toString()),
           onPressed: () {
             print(context.findAncestorWidgetOfExactType<MaterialApp>());
             print('1');
             showDialog(
                 context: context,
                 builder: (context) {
-                  return DialogUI(state : a);
+                  return DialogUI(addNumbers : addNumbers);
                 });
           },
         ),
-        appBar: AppBar(),
+        appBar: AppBar(title: Text(total.toString()),),
         body: Container(
             child: ListView.builder(
           itemCount: 3,
@@ -57,8 +64,10 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DialogUI extends StatelessWidget {
-  const DialogUI({super.key, this.state});
-  final state;
+  const DialogUI({super.key, this.addNumbers});
+
+  final addNumbers;
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -69,8 +78,7 @@ class DialogUI extends StatelessWidget {
               children: [
                 Text(
                   "Contact",
-                  style: TextStyle(
-                      fontSize: 20, fontWeight: FontWeight.w400),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                 ),
                 TextField(),
                 Container(
@@ -83,7 +91,9 @@ class DialogUI extends StatelessWidget {
                           },
                           child: Text("Cancel")),
                       TextButton(
-                          onPressed: () {}, child: Text(state.toString())),
+                          onPressed: () {
+                            addNumbers();
+                          }, child: Text("OK")),
                     ],
                   ),
                 )
