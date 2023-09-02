@@ -21,10 +21,17 @@ class _MyAppState extends State<MyApp> {
   var total = 3;
   var name = ['박정욱', '홍길동', '피자집'];
   List<int> like = [0, 0, 0];
+  var new_name = '';
 
   addNumbers() {
     setState(() {
       total++;
+    });
+  }
+
+  addName(var new_name) {
+    setState(() {
+      name.add(new_name);
     });
   }
 
@@ -39,20 +46,22 @@ class _MyAppState extends State<MyApp> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return DialogUI(addNumbers : addNumbers);
+                  return DialogUI(addNumbers: addNumbers, addName: addName);
                 });
           },
         ),
-        appBar: AppBar(title: Text(total.toString()),),
+        appBar: AppBar(
+          title: Text(total.toString()),
+        ),
         body: Container(
             child: ListView.builder(
-          itemCount: 3,
+          itemCount: total,
           itemBuilder: (context, i) {
             //print(i); //debuggin 가능함.
             return ListTile(
               leading: Icon(Icons.contact_page),
               title: Text(
-                "박정욱",
+                name[i].toString(),
                 style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
               ),
             );
@@ -64,9 +73,10 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DialogUI extends StatelessWidget {
-  const DialogUI({super.key, this.addNumbers});
+  DialogUI({super.key, this.addNumbers, this.addName});
 
-  final addNumbers;
+  final addNumbers, addName;
+  var inputData;
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +90,11 @@ class DialogUI extends StatelessWidget {
                   "Contact",
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                 ),
-                TextField(),
+                TextField(
+                  onChanged: (text) {
+                    inputData = text;
+                  },
+                ),
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -93,7 +107,9 @@ class DialogUI extends StatelessWidget {
                       TextButton(
                           onPressed: () {
                             addNumbers();
-                          }, child: Text("OK")),
+                            addName(inputData);
+                          },
+                          child: Text("OK")),
                     ],
                   ),
                 )
