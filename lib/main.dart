@@ -16,25 +16,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   get screenWidth => null;
 
-  getPermission() async {
-    var status = await Permission.contacts.status;
-    if (status.isGranted) {
-      print('허락됨');
-      var contacts = await ContactsService.getContacts();
-      print(contacts[0].givenName);
-    } else if (status.isDenied) {
-      print('거절됨');
-      Permission.contacts.request();
-    }
-  }
-
   Widget sizedIcon(IconData iconData) {
     return Icon(iconData, size: 50);
   }
 
   var total = 3;
-  var name = [
-    {'박정욱':'1111'}, {'홍길동':'2222'}, {'피자집':'3333'}
+  List<Map<String, String>> name = [
+    {'name': '박정욱', 'number': '1111'},
+    {'name': '홍길동', 'number': '2222'},
+    {'name': '피자집', 'number': '3333'},
   ];
   List<int> like = [0, 0, 0];
   var new_name = '';
@@ -45,11 +35,29 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  addName(var new_name) {
+  addName(String input1, String input2) {
     setState(() {
-      name.add(new_name);
-      name.sort((a,b) => a.keys.first.compareTo(b.keys.first));
+      name.add({'name': input1, 'number': input2});
     });
+  }
+
+  getPermission() async {
+    var status = await Permission.contacts.status;
+    if (status.isGranted) {
+      print('허락됨');
+      var contacts = await ContactsService.getContacts();
+
+      // var newPerson = Contact();
+      // newPerson.givenName = '민수';
+      // newPerson.familyName = '김';
+      // ContactsService.addContact(newPerson);
+      //
+
+      print(contacts[0].givenName);
+    } else if (status.isDenied) {
+      print('거절됨');
+      Permission.contacts.request();
+    }
   }
 
   @override
@@ -60,9 +68,9 @@ class _MyAppState extends State<MyApp> {
     openAppSettings();
     // 연락처 기능이 필요할 때 띄우기
   }
+
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           child: Text(name[0].keys.first.toString()),
@@ -77,9 +85,14 @@ class _MyAppState extends State<MyApp> {
           },
         ),
         appBar: AppBar(
-          title: Text(total.toString()), actions: [
-            IconButton(onPressed: (){getPermission();}, icon: Icon(Icons.contacts))
-        ],
+          title: Text(total.toString()),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  getPermission();
+                },
+                icon: Icon(Icons.contacts))
+          ],
         ),
         body: Container(
             child: ListView.builder(
@@ -87,21 +100,29 @@ class _MyAppState extends State<MyApp> {
           itemBuilder: (context, i) {
             //print(i); //debuggin 가능함.
             return ListTile(
-              leading: Icon(Icons.contact_page),
-              title:
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [Text(
-                name[i].keys.first.toString(),
-                style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
-              ),
-                Text(name[i].values.last.toString(),),],),
-              trailing: IconButton(icon: Icon(Icons.cancel_outlined), onPressed: (){
-                setState(() {
-                  name.removeAt(i);
-                });
-              },)
-            );
+                leading: Icon(Icons.contact_page),
+                title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      name[i].values.first.toString(),
+                      style: TextStyle(
+                          fontSize: 40.0, fontWeight: FontWeight.w300),
+                    ),
+                    Text(
+                      name[i].values.last.toString(),
+                    ),
+                  ],
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.cancel_outlined),
+                  onPressed: () {
+                    setState(() {
+                      name.removeAt(i);
+                      total--;
+                    });
+                  },
+                ));
           },
         )
             //i for문에서 개수 증가하는 것처럼 i가 증가한다. 목록 많이 필요할 때 ListView.builder
@@ -113,7 +134,7 @@ class DialogUI extends StatelessWidget {
   DialogUI({super.key, this.addNumbers, this.addName});
 
   final addNumbers, addName;
-  var inputData;
+  var inputData1, inputData2;
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +150,12 @@ class DialogUI extends StatelessWidget {
                 ),
                 TextField(
                   onChanged: (text) {
-                    inputData = text;
+                    inputData1 = text;
+                  },
+                ),
+                TextField(
+                  onChanged: (text) {
+                    inputData2 = text;
                   },
                 ),
                 Container(
@@ -143,12 +169,11 @@ class DialogUI extends StatelessWidget {
                           child: Text("Cancel")),
                       TextButton(
                           onPressed: () {
-                            if(inputData != Null){
+                            if (inputData1 && inputData2 != Null) {
                               addNumbers();
-                              addName(inputData);
+                              addName(inputData1, inputData2);
                               Navigator.pop(context);
                             }
-
                           },
                           child: Text("OK")),
                     ],
