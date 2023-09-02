@@ -21,13 +21,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   var total = 3;
-  List<Map<String, String>> name = [
-    {'name': '박정욱', 'number': '1111'},
-    {'name': '홍길동', 'number': '2222'},
-    {'name': '피자집', 'number': '3333'},
+  var name = [
+    {'박정욱', '1111'},
+    {'홍길동', '2222'},
+    {'피자집', '3333'},
   ];
-  List<int> like = [0, 0, 0];
-  var new_name = '';
 
   addNumbers() {
     setState(() {
@@ -37,7 +35,7 @@ class _MyAppState extends State<MyApp> {
 
   addName(String input1, String input2) {
     setState(() {
-      name.add({'name': input1, 'number': input2});
+      name.add({input1, input2});
     });
   }
 
@@ -73,7 +71,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
-          child: Text(name[0].keys.first.toString()),
+          child: Text(name[0].first.toString()),
           onPressed: () {
             print(context.findAncestorWidgetOfExactType<MaterialApp>());
             print('1');
@@ -105,12 +103,12 @@ class _MyAppState extends State<MyApp> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
-                      name[i].values.first.toString(),
+                      name[i].first.toString(),
                       style: TextStyle(
                           fontSize: 40.0, fontWeight: FontWeight.w300),
                     ),
                     Text(
-                      name[i].values.last.toString(),
+                      name[i].last.toString(),
                     ),
                   ],
                 ),
