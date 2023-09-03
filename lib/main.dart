@@ -50,7 +50,7 @@ class _MyAppState extends State<MyApp> {
       Permission.contacts.request();
     }
   }
-
+////Applications/Android\Studio.app/Contents/jbr/Contents/Home/bin/keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
   @override
   void initState() {
     // TODO: implement initState
