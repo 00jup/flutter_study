@@ -17,15 +17,11 @@ class _MyAppState extends State<MyApp> {
   get screenWidth => null;
 
   Widget sizedIcon(IconData iconData) {
-    return Icon(iconData, size: 50);
+    return Icon(iconData, size: 100);
   }
 
   var total = 3;
-  var name = [
-    {'박정욱', '1111'},
-    {'홍길동', '2222'},
-    {'피자집', '3333'},
-  ];
+  List<String> name = ['박정욱', 'hello', 'pizza'];
 
   addNumbers() {
     setState(() {
@@ -33,9 +29,12 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  addName(String input1, String input2) {
+  addName(String input1) {
     setState(() {
-      name.add({input1, input2});
+      var newPerson = Contact();
+      newPerson.givenName = input1;
+      ContactsService.addContact(newPerson);
+      name.add(input1);
     });
   }
 
@@ -44,12 +43,6 @@ class _MyAppState extends State<MyApp> {
     if (status.isGranted) {
       print('허락됨');
       var contacts = await ContactsService.getContacts();
-
-      // var newPerson = Contact();
-      // newPerson.givenName = '민수';
-      // newPerson.familyName = '김';
-      // ContactsService.addContact(newPerson);
-      //
 
       print(contacts[0].givenName);
     } else if (status.isDenied) {
@@ -70,61 +63,65 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
-          child: Text(name[0].first.toString()),
-          onPressed: () {
-            print(context.findAncestorWidgetOfExactType<MaterialApp>());
-            print('1');
-            showDialog(
-                context: context,
-                builder: (context) {
-                  return DialogUI(addNumbers: addNumbers, addName: addName);
-                });
-          },
-        ),
-        appBar: AppBar(
-          title: Text(total.toString()),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  getPermission();
-                },
-                icon: Icon(Icons.contacts))
-          ],
-        ),
-        body: Container(
-            child: ListView.builder(
-          itemCount: total,
-          itemBuilder: (context, i) {
-            //print(i); //debuggin 가능함.
-            return ListTile(
-                leading: Icon(Icons.contact_page),
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Text(
-                      name[i].first.toString(),
-                      style: TextStyle(
-                          fontSize: 40.0, fontWeight: FontWeight.w300),
-                    ),
-                    Text(
-                      name[i].last.toString(),
-                    ),
-                  ],
+      floatingActionButton: FloatingActionButton(
+        child: Text(name[0].toString()),
+        onPressed: () {
+          print(context.findAncestorWidgetOfExactType<MaterialApp>());
+          showDialog(
+            context: context,
+            builder: (context) {
+              return DialogUI(addNumbers: addNumbers, addName: addName);
+            },
+          );
+        },
+      ),
+      appBar: AppBar(
+        backgroundColor: Colors.lightGreen,
+        title: Text(total.toString()),
+        actions: [
+          IconButton(
+              onPressed: () {
+                getPermission();
+              },
+              icon: Icon(Icons.contacts))
+        ],
+      ),
+      body: Container(
+          child: ListView.builder(
+        itemCount: total,
+        itemBuilder: (context, i) {
+          //print(i); //debuggin 가능함.
+          return ListTile(
+            leading: Icon(Icons.contact_page),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  name[i].toString(),
+                  style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
                 ),
-                trailing: IconButton(
-                  icon: Icon(Icons.cancel_outlined),
-                  onPressed: () {
-                    setState(() {
-                      name.removeAt(i);
-                      total--;
-                    });
+                Text(
+                  name[i].toString(),
+                ),
+              ],
+            ),
+            trailing: IconButton(
+              icon: Icon(Icons.cancel_outlined),
+              onPressed: () {
+                setState(
+                  () {
+                    name.removeAt(i);
+                    total--;
                   },
-                ));
-          },
-        )
-            //i for문에서 개수 증가하는 것처럼 i가 증가한다. 목록 많이 필요할 때 ListView.builder
-            ));
+                );
+              },
+            ),
+          );
+        },
+      )
+          //i for문에서 개수 증가하는 것처럼 i가 증가한다. 목록 많이 필요할 때 ListView.builder
+          ),
+    );
   }
 }
 
@@ -167,9 +164,9 @@ class DialogUI extends StatelessWidget {
                           child: Text("Cancel")),
                       TextButton(
                           onPressed: () {
-                            if (inputData1 && inputData2 != Null) {
+                            if (inputData1 != Null) {
                               addNumbers();
-                              addName(inputData1, inputData2);
+                              addName(inputData1);
                               Navigator.pop(context);
                             }
                           },
