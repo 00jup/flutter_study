@@ -21,20 +21,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   var total = 3;
-  List<String> name = ['박정욱', 'hello', 'pizza'];
+  List<Map<String, String>> contacts = [
+    {'name': '박정욱', 'phone': '01054333333'},
+    {'name': 'hello', 'phone': '011111'},
+    {'name': 'pizza', 'phone': '01022222222'}
+  ];
 
-  addNumbers() {
+  addName(String input1, String input2) {
     setState(() {
       total++;
-    });
-  }
-
-  addName(String input1) {
-    setState(() {
-      var newPerson = Contact();
-      newPerson.givenName = input1;
+      var newPerson = Contact(
+          givenName: input1, phones: [Item(label: 'mobile', value: input2)]);
       ContactsService.addContact(newPerson);
-      name.add(input1);
+      contacts.add({'name': input1, 'phone': input2});
+      // newPerson.givenName = input1;
+      // newPerson.phones = input2 as List<Item>?;
+      // ContactsService.addContact(newPerson);
+      // name.add(input1);
     });
   }
 
@@ -45,11 +48,13 @@ class _MyAppState extends State<MyApp> {
       var contacts = await ContactsService.getContacts();
 
       print(contacts[0].givenName);
+      print(contacts[0].phones);
     } else if (status.isDenied) {
       print('거절됨');
       Permission.contacts.request();
     }
   }
+
 ////Applications/Android\Studio.app/Contents/jbr/Contents/Home/bin/keytool -genkey -v -keystore ~/upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
   @override
   void initState() {
@@ -64,13 +69,13 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        child: Text(name[0].toString()),
+        child: Text(contacts[0]['name'].toString()),
         onPressed: () {
           print(context.findAncestorWidgetOfExactType<MaterialApp>());
           showDialog(
             context: context,
             builder: (context) {
-              return DialogUI(addNumbers: addNumbers, addName: addName);
+              return DialogUI(addName: addName);
             },
           );
         },
@@ -97,11 +102,11 @@ class _MyAppState extends State<MyApp> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Text(
-                  name[i].toString(),
+                  contacts[i]['name'].toString(),
                   style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.w300),
                 ),
                 Text(
-                  name[i].toString(),
+                  contacts[i]['phone'].toString(),
                 ),
               ],
             ),
@@ -110,7 +115,7 @@ class _MyAppState extends State<MyApp> {
               onPressed: () {
                 setState(
                   () {
-                    name.removeAt(i);
+                    contacts.removeAt(i);
                     total--;
                   },
                 );
@@ -126,9 +131,9 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DialogUI extends StatelessWidget {
-  DialogUI({super.key, this.addNumbers, this.addName});
+  DialogUI({super.key, this.addName});
 
-  final addNumbers, addName;
+  final Function(String, String)? addName;
   var inputData1, inputData2;
 
   @override
@@ -144,15 +149,29 @@ class DialogUI extends StatelessWidget {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
                 ),
                 TextField(
-                  onChanged: (text) {
-                    inputData1 = text;
-                  },
-                ),
+                    onChanged: (text) {
+                      inputData1 = text;
+                    },
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.person),
+                      hintText: "이름을 입력하세요",
+                      filled: true,
+                      fillColor: Colors.blue.shade100,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                      ),
+                    )),
                 TextField(
-                  onChanged: (text) {
-                    inputData2 = text;
-                  },
-                ),
+                    onChanged: (text) {
+                      inputData2 = text;
+                    },
+                    decoration: InputDecoration(
+                      icon: Icon(Icons.phone),
+                      hintText: "전화번호를 입력하세요",
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red),
+                      ),
+                    )),
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -164,9 +183,8 @@ class DialogUI extends StatelessWidget {
                           child: Text("Cancel")),
                       TextButton(
                           onPressed: () {
-                            if (inputData1 != Null) {
-                              addNumbers();
-                              addName(inputData1);
+                            if (inputData1 != Null && inputData2 != Null) {
+                              addName!(inputData1, inputData2);
                               Navigator.pop(context);
                             }
                           },
